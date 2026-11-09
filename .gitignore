@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Additional Next.js and development files
+.vercel/
+.DS_Store
+*.pem
+next-env.d.ts
+.pnpm-debug.log*
+
+/src/generated/prisma
