@@ -1,6 +1,5 @@
 
 import { randomUUID } from "node:crypto";
-// @ts-expect-error Vitest is supplied by the test environment but its types are not resolved here.
 import { afterAll, describe, expect, it } from "vitest";
 
 import { prisma } from "../../db/prisma";

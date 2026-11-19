@@ -113,3 +113,59 @@ They verify:
 ### Important
 
 A passing test is evidence for the specific database role, policies, tables, and operations tested. It is not proof that every application route or every tenant-owned table is secure. Additional authorization and isolation tests are required as the application develops.
+
+## Phase 3 Application Security Configuration
+
+### Application database role
+
+The normal application connects as `fieldservice_app`.
+
+The role must satisfy:
+
+- rolcanlogin = true
+- rolsuper = false
+- rolbypassrls = false
+- is_owner_member = false
+
+The migration owner must not be used by normal application
+requests.
+
+### RLS enforcement
+
+All nine tenant-owned tables must have:
+
+- relrowsecurity = true
+- relforcerowsecurity = true
+- Exactly one intended tenant isolation policy.
+
+The policy must enforce both row visibility and row creation
+using the tenant context.
+
+### Tenant context
+
+The application uses:
+
+app.current_tenant_id
+
+It is established using transaction-local set_config.
+
+Tenant queries must run inside the same transaction
+in which the context is established.
+
+### Authentication and membership
+
+Global identity records are accessed before selecting
+a tenant.
+
+Membership authorization is performed after setting
+the requested tenant context.
+
+A user without a valid membership must not access
+tenant-owned records.
+
+### Testing
+
+The RLS integration suite runs against the Neon dev database.
+
+It verifies cross-tenant reads, cross-tenant inserts,
+unscoped queries, and transaction-local context behavior.

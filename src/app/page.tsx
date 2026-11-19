@@ -239,7 +239,7 @@ onClick={() => setMenuOpen(false)}
           <div>
             <h2 className="text-lg font-bold">Dashboard</h2>
             <p className="hidden text-xs text-gray-500 sm:block">
-              Welcome back! Here's what's happening today.
+              Welcome back! Here&apos;s what&apos;s happening today.
             </p>
           </div>
         </div>
@@ -377,7 +377,7 @@ onClick={() => setMenuOpen(false)}
           <div className="rounded-xl border border-gray-200 bg-white">
             <div className="flex items-center justify-between border-b border-gray-100 p-5">
               <div>
-                <h3 className="font-semibold">Today's Schedule</h3>
+                <h3 className="font-semibold">Today&apos;s Schedule</h3>
                 <p className="mt-1 text-xs text-gray-500">
                   Upcoming appointments
                 </p>

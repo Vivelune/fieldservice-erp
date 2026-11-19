@@ -1,0 +1,58 @@
+name: Field Service ERP CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fieldservice-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-and-security:
+    name: Lint, Typecheck and RLS Tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run TypeScript typecheck
+        run: pnpm typecheck
+
+      - name: Validate Prisma schema
+        run: pnpm exec prisma validate
+        env:
+          DIRECT_URL: ${{ secrets.NEON_DEV_APP_DATABASE_URL }}
+
+      - name: Run RLS integration tests
+        run: pnpm test
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DEV_APP_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.NEON_DEV_APP_DATABASE_URL }}
+          RLS_TEST_DATABASE: dev
